@@ -2,7 +2,7 @@
 
 Editor de tono y tiempo por notas, de código abierto, hecho desde cero en C++. Inspirado en los editores de afinación "por blobs": detecta cada nota de una voz y te deja moverla, estirarla y afinarla sin que suene robótico.
 
-> 🚧 **En desarrollo temprano.** Todavía no hay nada usable; mira el [plan de acción](docs/PLAN.md) y los [milestones](../../milestones).
+> 🚧 **En desarrollo temprano.** Todavía no hay nada usable; mira el [plan de acción](docs/PLAN.md) y los [milestones](https://github.com/jonontheradio/melisma/milestones).
 
 ## Objetivos
 

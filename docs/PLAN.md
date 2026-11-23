@@ -1,6 +1,6 @@
 # Plan de acción de Melisma
 
-Este documento explica **cómo funciona** Melisma por dentro, **en qué orden** lo vamos a construir y **qué se podrá configurar**. Las tareas concretas están en los [issues](../../issues) y en los [milestones](../../milestones) del repo.
+Este documento explica **cómo funciona** Melisma por dentro, **en qué orden** lo vamos a construir y **qué se podrá configurar**. Las tareas concretas están en los [issues](https://github.com/jonontheradio/melisma/issues) y en los [milestones](https://github.com/jonontheradio/melisma/milestones) del repo.
 
 ---
 
