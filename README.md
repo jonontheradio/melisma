@@ -21,7 +21,7 @@ Los detalles, la arquitectura y todas las opciones configurables están en [docs
 
 ## Stack
 
-C++20 · CMake · [JUCE 8](https://juce.com) · Catch2 · GitHub Actions
+C++20 · CMake · [JUCE 9](https://juce.com) · Catch2 · GitHub Actions
 
 ## Compilar
 

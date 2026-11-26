@@ -82,7 +82,7 @@ melisma/
 **Reglas de diseño:**
 - `core` no depende de la GUI ni del host. Todo el DSP se prueba con tests.
 - Nada que reserve memoria o bloquee en el hilo de audio. El análisis y el render se hacen en hilos de fondo; el hilo de audio solo lee buffers ya renderizados.
-- Stack: **C++20, CMake, JUCE 8 (AGPLv3), Catch2**, GitHub Actions para CI en macOS (y después Windows).
+- Stack: **C++20, CMake, JUCE 9 (AGPLv3), Catch2**, GitHub Actions para CI en macOS (y después Windows).
 
 ## 4. Opciones configurables
 
