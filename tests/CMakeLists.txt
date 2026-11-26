@@ -17,6 +17,7 @@ melisma_set_warnings(melisma_test_support)
 # ---- Test executable -----------------------------------------------------------
 add_executable(melisma_tests
     core/PitchTests.cpp
+    core/audio/MonoAudioTests.cpp
     core/VersionTests.cpp
     support/TestSignalsTests.cpp)
 

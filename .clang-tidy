@@ -36,7 +36,8 @@ Checks: >
   -readability-avoid-const-params-in-decls,
   -readability-convert-member-functions-to-static,
   -readability-math-missing-parentheses,
-  -readability-named-parameter
+  -readability-named-parameter,
+  -readability-trailing-comma
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*/(core|ui|plugin|app|tests|tools)/.*'

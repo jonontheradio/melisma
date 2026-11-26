@@ -17,7 +17,8 @@ configure_file(
 
 target_sources(melisma_core
     PRIVATE
-        src/Version.cpp)
+        src/Version.cpp
+        src/audio/MonoAudio.cpp)
 
 target_include_directories(melisma_core
     PUBLIC
