@@ -133,6 +133,13 @@ Signal noise (double seconds, double sampleRate, float amplitude, std::uint32_t 
 
 Signal vowel (const VowelSettings& settings, double seconds, double sampleRate)
 {
+    const double hz = settings.f0Hz;
+    return vowelWithPitchCurve (settings, [hz] (double) { return hz; }, seconds, sampleRate);
+}
+
+Signal vowelWithPitchCurve (const VowelSettings& settings, const std::function<double (double)>& baseHzAt,
+                            double seconds, double sampleRate)
+{
     Signal s;
     s.sampleRate = sampleRate;
     const auto n = numSamples (seconds, sampleRate);
@@ -160,7 +167,7 @@ Signal vowel (const VowelSettings& settings, double seconds, double sampleRate)
         wander = wanderSmoothing * wander + (1.0 - wanderSmoothing) * step (rng) * 40.0;
         const double cents = settings.vibratoDepthCents * std::sin (twoPi * settings.vibratoRateHz * t)
                              + settings.jitterCents * std::clamp (wander, -1.0, 1.0);
-        const double hz = settings.f0Hz * pitch::centsToRatio (cents);
+        const double hz = baseHzAt (t) * pitch::centsToRatio (cents);
         s.f0[i] = hz;
 
         // Band-limited sawtooth (additive, harmonics below Nyquist) as glottal source.
@@ -217,6 +224,39 @@ Signal melody (const std::vector<Note>& notes, bool useVowel, double gapSeconds,
         out.append (silence (gapSeconds, sampleRate));
     }
     return out;
+}
+
+Signal legatoMelody (const std::vector<Note>& notes, double glideSeconds, const VowelSettings& voice, double sampleRate)
+{
+    std::vector<double> starts;
+    double total = 0.0;
+    for (const auto& n : notes)
+    {
+        starts.push_back (total);
+        total += n.seconds;
+    }
+
+    const auto midiAt = [&notes, &starts, glideSeconds] (double t)
+    {
+        std::size_t i = 0;
+        while (i + 1 < notes.size() && t >= starts[i + 1])
+        {
+            ++i;
+        }
+        // Glide from the previous note during the first glideSeconds of this one.
+        if (i > 0 && t - starts[i] < glideSeconds)
+        {
+            const double x = (t - starts[i]) / glideSeconds;
+            const double smooth = x * x * (3.0 - 2.0 * x);
+            return notes[i - 1].midi + smooth * (notes[i].midi - notes[i - 1].midi);
+        }
+        return notes.empty() ? 60.0 : notes[i].midi;
+    };
+
+    auto s =
+        vowelWithPitchCurve (voice, [&midiAt] (double t) { return pitch::midiToHz (midiAt (t)); }, total, sampleRate);
+    applyFades (s, 0.01);
+    return s;
 }
 
 void applyFades (Signal& signal, double fadeSeconds)

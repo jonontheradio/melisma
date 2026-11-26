@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <functional>
 #include <vector>
 
 /** Synthetic signals with known ground truth, used to measure the accuracy of
@@ -59,6 +60,12 @@ struct VowelSettings
 
 Signal vowel (const VowelSettings& settings, double seconds, double sampleRate = 44100.0);
 
+/** Like vowel(), but the base pitch follows baseHzAt(seconds) instead of
+    settings.f0Hz (vibrato and jitter are still added on top). Phase is
+    continuous, so pitch changes sound like a real legato. */
+Signal vowelWithPitchCurve (const VowelSettings& settings, const std::function<double (double)>& baseHzAt,
+                            double seconds, double sampleRate = 44100.0);
+
 /** One note of a melody. */
 struct Note
 {
@@ -70,6 +77,12 @@ struct Note
     Notes get short fades so their edges are clean. */
 Signal melody (const std::vector<Note>& notes, bool useVowel = true, double gapSeconds = 0.08,
                double sampleRate = 44100.0);
+
+/** A legato vowel line: notes joined without gaps, with a short portamento
+    (glideSeconds) between them and short fades at the very start and end.
+    voice.f0Hz is ignored; its vibrato, jitter and formants are used. */
+Signal legatoMelody (const std::vector<Note>& notes, double glideSeconds = 0.03, const VowelSettings& voice = {},
+                     double sampleRate = 44100.0);
 
 /** Applies linear fade-in/out of the given length in place. */
 void applyFades (Signal& signal, double fadeSeconds);
