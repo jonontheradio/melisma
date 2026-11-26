@@ -18,7 +18,10 @@ configure_file(
 target_sources(melisma_core
     PRIVATE
         src/Version.cpp
-        src/audio/MonoAudio.cpp)
+        src/analysis/PitchTrack.cpp
+        src/analysis/Yin.cpp
+        src/audio/MonoAudio.cpp
+        src/dsp/Fft.cpp)
 
 target_include_directories(melisma_core
     PUBLIC
