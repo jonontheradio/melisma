@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: macOS (${{ matrix.config }})
+    runs-on: macos-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+
+    env:
+      FETCHCONTENT_BASE_DIR: ${{ github.workspace }}/.deps
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 500M
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install build tools
+        run: |
+          brew install ninja ccache
+          cmake --version
+          clang++ --version
+
+      - name: Cache third-party sources (JUCE, Catch2)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .deps
+          key: deps-${{ runner.os }}-${{ runner.arch }}-${{ matrix.config }}-${{ hashFiles('cmake/MelismaDependencies.cmake') }}
+
+      - name: Cache compiler output (ccache)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .ccache
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.config }}-${{ github.sha }}
+          restore-keys: ccache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.config }}-
+
+      - name: Configure
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+          -DFETCHCONTENT_BASE_DIR="$FETCHCONTENT_BASE_DIR"
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: ccache stats
+        if: always()
+        run: ccache --show-stats
+
+      - name: Upload plugins
+        if: matrix.config == 'Release'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Melisma-macOS-${{ runner.arch }}
+          path: |
+            build/plugin/Melisma_artefacts/Release/VST3/Melisma.vst3
+            build/plugin/Melisma_artefacts/Release/AU/Melisma.component
+            build/plugin/Melisma_artefacts/Release/Standalone/Melisma.app
+          retention-days: 14
