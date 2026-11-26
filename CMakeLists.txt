@@ -34,6 +34,7 @@ include(MelismaDependencies)
 
 # ---- Subprojects -------------------------------------------------------------
 add_subdirectory(core)        # DSP + model library, no GUI       (#12)
+add_subdirectory(adapters)    # JUCE <-> core glue (file loading...)
 add_subdirectory(ui)          # JUCE components: piano roll, blobs (M2)
 
 if(MELISMA_BUILD_PLUGIN)
