@@ -27,3 +27,14 @@ TEST_CASE ("Cents", "[core][pitch]")
     CHECK (pitch::centsToRatio (100.0) == Approx (std::exp2 (1.0 / 12.0)));
     CHECK (pitch::centsBetween (440.0, 440.0 * pitch::centsToRatio (37.0)) == Approx (37.0));
 }
+
+TEST_CASE ("Note names", "[core][pitch]")
+{
+    CHECK (pitch::noteName (69.0) == "A4");
+    CHECK (pitch::noteName (60.0) == "C4");
+    CHECK (pitch::noteName (61.4) == "C#4");
+    CHECK (pitch::noteName (59.6) == "C4");
+    CHECK (pitch::noteName (11.0) == "B-1");
+    CHECK (pitch::centsFromNearestNote (69.25) == Approx (25.0));
+    CHECK (pitch::centsFromNearestNote (68.7) == Approx (-30.0));
+}
