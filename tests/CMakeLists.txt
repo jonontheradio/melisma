@@ -20,6 +20,7 @@ add_executable(melisma_tests
     core/analysis/AnalysisTests.cpp
     core/analysis/NoteSegmentationTests.cpp
     core/analysis/OnsetTests.cpp
+    core/analysis/PitchMarksTests.cpp
     core/analysis/VoicingTests.cpp
     core/analysis/YinTests.cpp
     core/audio/MonoAudioTests.cpp

@@ -25,9 +25,11 @@ std::optional<model::Take> analyseTake (audio::MonoAudio audio, const AnalysisSe
     const auto classes = classifyFrames (audio, track, settings.voicing);
     const auto onsets = detectOnsets (audio, track, settings.onsets);
     auto notes = segmentNotes (track, classes, settings.segmentation, onsets);
+    auto marks = detectPitchMarks (audio, track, classes);
 
     model::Take take (std::move (audio), std::move (track));
     take.setNotes (std::move (notes));
+    take.setPitchMarks (std::move (marks));
 
     if (progress && !progress (1.0))
     {

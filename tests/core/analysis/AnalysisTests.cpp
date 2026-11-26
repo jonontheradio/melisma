@@ -42,6 +42,7 @@ TEST_CASE ("analyseTake runs the whole pipeline", "[core][analysis][pipeline]")
     CHECK (take->pitch().size() > 100);
     CHECK (take->source().durationSeconds() > 1.0);
     CHECK (take->isUnedited());
+    CHECK (take->pitchMarks().size() > 200); // ~1 s of voiced audio around 300 Hz
 
     REQUIRE (!reported.empty());
     CHECK (reported.back() == 1.0);

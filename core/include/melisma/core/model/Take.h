@@ -1,9 +1,11 @@
 #pragma once
 
+#include "melisma/core/analysis/PitchMarks.h"
 #include "melisma/core/analysis/PitchTrack.h"
 #include "melisma/core/audio/MonoAudio.h"
 #include "melisma/core/model/Note.h"
 
+#include <utility>
 #include <vector>
 
 namespace melisma::model
@@ -18,6 +20,10 @@ public:
 
     const audio::MonoAudio& source() const { return sourceAudio; }
     const analysis::PitchTrack& pitch() const { return pitchTrack; }
+
+    /** Glottal-cycle marks used by resynthesis. */
+    const analysis::PitchMarks& pitchMarks() const { return marks; }
+    void setPitchMarks (analysis::PitchMarks newMarks) { marks = std::move (newMarks); }
 
     /** Notes sorted by start time. */
     const std::vector<Note>& notes() const { return noteList; }
@@ -48,6 +54,7 @@ private:
 
     audio::MonoAudio sourceAudio;
     analysis::PitchTrack pitchTrack;
+    analysis::PitchMarks marks;
     std::vector<Note> noteList;
     NoteId nextId = 1;
 };
