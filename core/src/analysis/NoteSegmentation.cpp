@@ -213,7 +213,7 @@ double SegmentationSettings::holdSeconds() const
 }
 
 std::vector<model::Note> segmentNotes (const PitchTrack& track, const std::vector<FrameClass>& classes,
-                                       const SegmentationSettings& settings)
+                                       const SegmentationSettings& settings, const std::vector<double>& onsetTimes)
 {
     std::vector<model::Note> result;
     const std::size_t n = std::min (track.size(), classes.size());
@@ -263,6 +263,28 @@ std::vector<model::Note> segmentNotes (const PitchTrack& track, const std::vecto
             notes[k].first = boundary;
         }
         std::erase_if (notes, [] (const Range& r) { return r.size() == 0; });
+
+        // Onsets split notes too (repeated notes of the same pitch), when both
+        // parts stay long enough.
+        for (const double onset : onsetTimes)
+        {
+            const double rel = (onset - track.frames[region.first].timeSeconds) / hop;
+            if (rel < 0.0)
+            {
+                continue;
+            }
+            const auto at = static_cast<std::size_t> (std::lround (rel));
+            for (std::size_t k = 0; k < notes.size(); ++k)
+            {
+                if (at >= notes[k].first + minFrames && at + minFrames <= notes[k].last)
+                {
+                    notes.insert (notes.begin() + static_cast<std::ptrdiff_t> (k) + 1, Range{at, notes[k].last});
+                    notes[k].last = at;
+                    break;
+                }
+            }
+        }
+
         mergeShortNotes (notes, midi, minFrames);
 
         for (const auto& r : notes)
