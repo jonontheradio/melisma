@@ -11,7 +11,7 @@ CLANG_FORMAT_VERSION="23.1.5"
 cd "$(git rev-parse --show-toplevel)"
 
 files=()
-while IFS= read -r f; do files+=("$f"); done < <(git ls-files '*.cpp' '*.h' '*.hpp' '*.mm')
+while IFS= read -r f; do files+=("$f"); done < <(git ls-files --cached --others --exclude-standard '*.cpp' '*.h' '*.hpp' '*.mm')
 
 if [[ ${#files[@]} -eq 0 ]]; then
     echo "No C++ files found."
