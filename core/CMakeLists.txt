@@ -18,6 +18,7 @@ configure_file(
 target_sources(melisma_core
     PRIVATE
         src/Version.cpp
+        src/analysis/Analysis.cpp
         src/analysis/NoteSegmentation.cpp
         src/analysis/PitchTrack.cpp
         src/analysis/Voicing.cpp
@@ -32,5 +33,8 @@ target_include_directories(melisma_core
         "${CMAKE_CURRENT_BINARY_DIR}/include")
 
 target_compile_features(melisma_core PUBLIC cxx_std_20)
+
+find_package(Threads REQUIRED)
+target_link_libraries(melisma_core PUBLIC Threads::Threads)
 
 melisma_set_warnings(melisma_core)
