@@ -1,0 +1,44 @@
+# Melisma code style (close to JUCE's own style).
+# Formatter pinned to clang-format 23.1.5: run tools/format.sh
+---
+Language: Cpp
+Standard: c++20
+BasedOnStyle: LLVM
+
+ColumnLimit: 120
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+AccessModifierOffset: -4
+NamespaceIndentation: None
+FixNamespaceComments: true
+IndentCaseLabels: true
+IndentPPDirectives: None
+
+BreakBeforeBraces: Allman
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
+AllowShortBlocksOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: Yes
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: Never
+BreakInheritanceList: BeforeColon
+BinPackArguments: true
+BinPackParameters: true
+AlignAfterOpenBracket: Align
+AlignOperands: Align
+BreakBeforeBinaryOperators: NonAssignment
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+SpaceBeforeParens: NonEmptyParentheses
+SpaceAfterTemplateKeyword: true
+SpaceAfterCStyleCast: true
+Cpp11BracedListStyle: true
+
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+...

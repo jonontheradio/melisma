@@ -20,19 +20,23 @@ bool MelismaProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 
     // Mono or stereo, and the same layout in and out (vocals are usually mono tracks).
     if (out != juce::AudioChannelSet::mono() && out != juce::AudioChannelSet::stereo())
+    {
         return false;
+    }
 
     return layouts.getMainInputChannelSet() == out;
 }
 
 void MelismaProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-    juce::ScopedNoDenormals noDenormals;
+    const juce::ScopedNoDenormals noDenormals;
 
     // Pass-through: the input already sits in the buffer. Only clear output
     // channels that have no matching input, so they never carry garbage.
     for (auto ch = getTotalNumInputChannels(); ch < getTotalNumOutputChannels(); ++ch)
+    {
         buffer.clear (ch, 0, buffer.getNumSamples());
+    }
 }
 
 juce::AudioProcessorEditor* MelismaProcessor::createEditor()

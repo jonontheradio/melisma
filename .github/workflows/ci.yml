@@ -14,6 +14,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  format:
+    name: Format check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+
+      - name: clang-format
+        run: tools/format.sh --check
+
   macos:
     name: macOS (${{ matrix.config }})
     runs-on: macos-latest
@@ -34,7 +48,7 @@ jobs:
 
       - name: Install build tools
         run: |
-          brew install ninja ccache
+          brew install ninja ccache uv
           cmake --version
           clang++ --version
 
@@ -65,6 +79,10 @@ jobs:
 
       - name: Test
         run: ctest --test-dir build --output-on-failure
+
+      - name: clang-tidy
+        if: matrix.config == 'Debug'
+        run: TIDY_STRICT=1 tools/tidy.sh build
 
       - name: ccache stats
         if: always()
