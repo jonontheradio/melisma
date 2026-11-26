@@ -28,7 +28,7 @@ if [[ "${TIDY_STRICT:-0}" == "1" ]]; then
 fi
 
 files=()
-while IFS= read -r f; do files+=("$f"); done < <(git ls-files '*.cpp')
+while IFS= read -r f; do files+=("$f"); done < <(git ls-files --cached --others --exclude-standard '*.cpp')
 
 uvx -q --from "clang-tidy==${CLANG_TIDY_VERSION}" clang-tidy \
     -p "${BUILD_DIR}" --quiet "${extra[@]}" "${files[@]}"
