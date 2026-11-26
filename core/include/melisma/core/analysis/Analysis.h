@@ -1,6 +1,7 @@
 #pragma once
 
 #include "melisma/core/analysis/NoteSegmentation.h"
+#include "melisma/core/analysis/Onsets.h"
 #include "melisma/core/analysis/Voicing.h"
 #include "melisma/core/analysis/Yin.h"
 #include "melisma/core/model/Take.h"
@@ -17,11 +18,12 @@ struct AnalysisSettings
 {
     YinSettings pitch;
     VoicingSettings voicing;
+    OnsetSettings onsets;
     SegmentationSettings segmentation;
 };
 
 /** Runs the whole pipeline on analysis-ready audio:
-    pitch detection -> voicing -> note segmentation -> Take.
+    pitch detection -> voicing + onsets -> note segmentation -> Take.
     Returns nullopt if `progress` cancelled it. */
 std::optional<model::Take> analyseTake (audio::MonoAudio audio, const AnalysisSettings& settings = {},
                                         const ProgressCallback& progress = {});

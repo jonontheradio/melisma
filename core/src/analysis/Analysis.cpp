@@ -7,8 +7,8 @@ namespace melisma::analysis
 std::optional<model::Take> analyseTake (audio::MonoAudio audio, const AnalysisSettings& settings,
                                         const ProgressCallback& progress)
 {
-    // Pitch detection is ~95% of the work; the rest is reported at the end.
-    constexpr double pitchShare = 0.95;
+    // Pitch detection is most of the work; the rest is reported at the end.
+    constexpr double pitchShare = 0.9;
     bool keepGoing = true;
     const ProgressCallback pitchProgress = [&] (double p)
     {
@@ -23,7 +23,8 @@ std::optional<model::Take> analyseTake (audio::MonoAudio audio, const AnalysisSe
     }
 
     const auto classes = classifyFrames (audio, track, settings.voicing);
-    auto notes = segmentNotes (track, classes, settings.segmentation);
+    const auto onsets = detectOnsets (audio, track, settings.onsets);
+    auto notes = segmentNotes (track, classes, settings.segmentation, onsets);
 
     model::Take take (std::move (audio), std::move (track));
     take.setNotes (std::move (notes));

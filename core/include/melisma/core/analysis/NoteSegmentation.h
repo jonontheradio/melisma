@@ -28,7 +28,11 @@ struct SegmentationSettings
     holdSeconds(), so vibrato and drift stay inside one note. Each note gets an
     energy-weighted centre pitch measured on its stable middle part.
 
+    Onsets (see detectOnsets) also start a new note when they fall inside one,
+    which separates repeated notes of the same pitch.
+
     Returned notes are sorted, do not overlap and have id 0 (Take assigns ids). */
 std::vector<model::Note> segmentNotes (const PitchTrack& track, const std::vector<FrameClass>& classes,
-                                       const SegmentationSettings& settings = {});
+                                       const SegmentationSettings& settings = {},
+                                       const std::vector<double>& onsetTimes = {});
 } // namespace melisma::analysis
