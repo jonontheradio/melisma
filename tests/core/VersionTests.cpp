@@ -6,9 +6,8 @@
 
 TEST_CASE ("Version string matches its numeric parts", "[core][version]")
 {
-    const auto expected = std::to_string (melisma::versionMajor) + "."
-                        + std::to_string (melisma::versionMinor) + "."
-                        + std::to_string (melisma::versionPatch);
+    const auto expected = std::to_string (melisma::versionMajor) + "." + std::to_string (melisma::versionMinor) + "."
+                          + std::to_string (melisma::versionPatch);
 
     CHECK (melisma::versionString == expected);
 }
