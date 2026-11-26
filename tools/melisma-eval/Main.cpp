@@ -2,7 +2,7 @@
 //
 //   melisma-eval voice.wav                 -> prints the notes, writes voice.f0.csv and voice.notes.csv
 //   melisma-eval voice.wav --out results/  -> CSVs go to results/
-//   options: --sensitivity 0..1  --min-hz N  --max-hz N
+//   options: --algorithm pyin|yin  --sensitivity 0..1  --min-hz N  --max-hz N
 #include "AudioFileLoader.h"
 
 #include <melisma/core/Pitch.h>
@@ -38,7 +38,8 @@ const char* className (FrameClass c)
 
 int usage()
 {
-    std::cerr << "usage: melisma-eval <audio file> [--out DIR] [--sensitivity 0..1] [--min-hz N] [--max-hz N]\n";
+    std::cerr << "usage: melisma-eval <audio file> [--out DIR] [--algorithm pyin|yin] [--sensitivity 0..1] [--min-hz "
+                 "N] [--max-hz N]\n";
     return 2;
 }
 } // namespace
@@ -71,6 +72,15 @@ static int run (const std::vector<juce::String>& args)
         {
             settings.segmentation.sensitivity = value.getDoubleValue();
         }
+        else if (arg == "--algorithm")
+        {
+            if (value != "yin" && value != "pyin")
+            {
+                return usage();
+            }
+            settings.algorithm =
+                value == "yin" ? melisma::analysis::PitchAlgorithm::yin : melisma::analysis::PitchAlgorithm::pyin;
+        }
         else if (arg == "--min-hz")
         {
             settings.pitch.minHz = value.getDoubleValue();
@@ -102,8 +112,14 @@ static int run (const std::vector<juce::String>& args)
         return 1;
     }
 
-    // Frame classes are recomputed here only to write them to the CSV.
-    const auto classes = melisma::analysis::classifyFrames (take->source(), take->pitch(), settings.voicing);
+    // Frame classes are recomputed here only to write them to the CSV
+    // (same rule as analyseTake: pYIN decides voicing itself).
+    auto voicing = settings.voicing;
+    if (settings.algorithm == melisma::analysis::PitchAlgorithm::pyin)
+    {
+        voicing.minConfidence = 0.0;
+    }
+    const auto classes = melisma::analysis::classifyFrames (take->source(), take->pitch(), voicing);
 
     if (!outDir.createDirectory())
     {

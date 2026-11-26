@@ -3,20 +3,29 @@
 #include "melisma/core/analysis/NoteSegmentation.h"
 #include "melisma/core/analysis/Onsets.h"
 #include "melisma/core/analysis/PitchMarks.h"
+#include "melisma/core/analysis/Pyin.h"
 #include "melisma/core/analysis/Voicing.h"
 #include "melisma/core/analysis/Yin.h"
 #include "melisma/core/model/Take.h"
 
 #include <atomic>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <thread>
 
 namespace melisma::analysis
 {
+enum class PitchAlgorithm : std::uint8_t
+{
+    yin,  // fast, single threshold
+    pyin, // probabilistic + HMM: more robust in noise, decides voicing itself
+};
+
 /** All settings of the analysis pipeline (see docs/PLAN.md, "Análisis"). */
 struct AnalysisSettings
 {
+    PitchAlgorithm algorithm = PitchAlgorithm::pyin;
     YinSettings pitch;
     VoicingSettings voicing;
     OnsetSettings onsets;

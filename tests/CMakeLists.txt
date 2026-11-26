@@ -9,6 +9,7 @@ include(Catch)
 
 # ---- Shared test helpers -------------------------------------------------------
 add_library(melisma_test_support STATIC
+    support/PitchAccuracy.cpp
     support/TestSignals.cpp)
 target_include_directories(melisma_test_support PUBLIC support)
 target_link_libraries(melisma_test_support PUBLIC melisma::core)
@@ -21,6 +22,7 @@ add_executable(melisma_tests
     core/analysis/NoteSegmentationTests.cpp
     core/analysis/OnsetTests.cpp
     core/analysis/PitchMarksTests.cpp
+    core/analysis/PyinTests.cpp
     core/analysis/VoicingTests.cpp
     core/analysis/YinTests.cpp
     core/audio/MonoAudioTests.cpp

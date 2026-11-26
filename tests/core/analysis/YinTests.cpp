@@ -1,3 +1,4 @@
+#include "PitchAccuracy.h"
 #include "TestSignals.h"
 
 #include <melisma/core/Pitch.h>
@@ -13,59 +14,13 @@ namespace ts = melisma::testsignals;
 using melisma::analysis::detectPitchYin;
 using melisma::analysis::PitchTrack;
 using melisma::analysis::YinSettings;
+using melisma::testsupport::measure;
 
 namespace
 {
 melisma::audio::MonoAudio toMono (const ts::Signal& s)
 {
     return {s.samples, s.sampleRate};
-}
-
-struct Accuracy
-{
-    std::size_t framesCompared = 0;
-    std::size_t framesWithoutPitch = 0;
-    std::size_t grossErrors = 0; // |error| > 50 cents (octave errors, wrong harmonic...)
-    double medianCents = 0.0;
-    double p95Cents = 0.0;
-    double maxCents = 0.0;
-};
-
-/** Compares detected f0 with ground truth on frames that are fully voiced
-    (truth > 0 for `margin` seconds around the frame). */
-Accuracy measure (const PitchTrack& track, const ts::Signal& truth, double margin = 0.03)
-{
-    Accuracy acc;
-    std::vector<double> errors;
-    for (const auto& frame : track.frames)
-    {
-        const double t = frame.timeSeconds;
-        if (truth.f0At (t - margin) <= 0.0 || truth.f0At (t) <= 0.0 || truth.f0At (t + margin) <= 0.0)
-        {
-            continue;
-        }
-        ++acc.framesCompared;
-        if (!frame.hasPitch())
-        {
-            ++acc.framesWithoutPitch;
-            continue;
-        }
-        const double cents = std::abs (melisma::pitch::centsBetween (truth.f0At (t), frame.f0Hz));
-        if (cents > 50.0)
-        {
-            ++acc.grossErrors;
-        }
-        errors.push_back (cents);
-    }
-
-    if (!errors.empty())
-    {
-        std::ranges::sort (errors);
-        acc.medianCents = errors[errors.size() / 2];
-        acc.p95Cents = errors[static_cast<std::size_t> (0.95 * static_cast<double> (errors.size() - 1))];
-        acc.maxCents = errors.back();
-    }
-    return acc;
 }
 
 std::size_t framesWithPitch (const PitchTrack& track)

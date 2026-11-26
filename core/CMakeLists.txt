@@ -23,6 +23,7 @@ target_sources(melisma_core
         src/analysis/Onsets.cpp
         src/analysis/PitchMarks.cpp
         src/analysis/PitchTrack.cpp
+        src/analysis/Pyin.cpp
         src/analysis/Voicing.cpp
         src/analysis/Yin.cpp
         src/audio/MonoAudio.cpp
