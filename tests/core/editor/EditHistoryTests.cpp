@@ -104,6 +104,10 @@ TEST_CASE ("Escape restores a drag", "[core][editor][history]")
     const auto id = take.notes()[0].id;
     const EditSnapshot snapshot (take, {id});
     take.findNote (id)->edits.timeStretch = 3.0;
+    REQUIRE (snapshot.find (id) != nullptr);
+    CHECK (snapshot.find (id)->timeStretch == 1.0);
+    CHECK (snapshot.find (12345) == nullptr);
+    CHECK (snapshot.ids() == std::vector{id});
     snapshot.restore (take);
     CHECK (take.notes()[0].edits.isNeutral());
 }

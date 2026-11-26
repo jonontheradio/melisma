@@ -59,6 +59,23 @@ void EditSnapshot::restore (model::Take& take) const
     }
 }
 
+const model::NoteEdits* EditSnapshot::find (model::NoteId id) const
+{
+    const auto it = std::ranges::find (saved, id, &std::pair<model::NoteId, model::NoteEdits>::first);
+    return it != saved.end() ? &it->second : nullptr;
+}
+
+std::vector<model::NoteId> EditSnapshot::ids() const
+{
+    std::vector<model::NoteId> out;
+    out.reserve (saved.size());
+    for (const auto& entry : saved)
+    {
+        out.push_back (entry.first);
+    }
+    return out;
+}
+
 void EditHistory::perform (model::Take& take, EditCommand command)
 {
     applyEdits (take, command, true);

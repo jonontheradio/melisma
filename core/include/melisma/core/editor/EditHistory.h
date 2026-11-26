@@ -39,6 +39,10 @@ public:
     /** Puts the captured edits back (e.g. Escape during a drag). */
     void restore (model::Take& take) const;
 
+    /** Edits of a note at capture time (nullptr if it was not captured). */
+    const model::NoteEdits* find (model::NoteId id) const;
+    std::vector<model::NoteId> ids() const;
+
 private:
     std::vector<std::pair<model::NoteId, model::NoteEdits>> saved;
 };
