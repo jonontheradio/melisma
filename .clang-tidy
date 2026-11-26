@@ -17,6 +17,7 @@ Checks: >
   cppcoreguidelines-virtual-class-destructor,
   misc-*,
   -misc-include-cleaner,
+  -misc-multiple-inheritance,
   -misc-non-private-member-variables-in-classes,
   -misc-no-recursion,
   -misc-use-anonymous-namespace,

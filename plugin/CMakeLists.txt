@@ -26,7 +26,10 @@ juce_add_plugin(Melisma
 target_sources(Melisma
     PRIVATE
         src/PluginProcessor.cpp
-        src/PluginEditor.cpp)
+        src/PluginEditor.cpp
+        ${MELISMA_UI_SOURCES})
+
+target_include_directories(Melisma PRIVATE "${MELISMA_UI_INCLUDE_DIR}")
 
 target_compile_definitions(Melisma
     PUBLIC
@@ -36,7 +39,7 @@ target_compile_definitions(Melisma
 
 target_link_libraries(Melisma
     PRIVATE
-        melisma::core
+        melisma::juce_adapters # brings melisma::core
         juce::juce_audio_utils
         juce::juce_dsp
     PUBLIC

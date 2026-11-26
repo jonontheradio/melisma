@@ -28,6 +28,10 @@ target_sources(melisma_core
         src/analysis/Yin.cpp
         src/audio/MonoAudio.cpp
         src/dsp/Fft.cpp
+        src/editor/EditHistory.cpp
+        src/editor/Selection.cpp
+        src/editor/Snapping.cpp
+        src/editor/Viewport.cpp
         src/model/Take.cpp)
 
 target_include_directories(melisma_core
