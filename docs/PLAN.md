@@ -66,7 +66,7 @@ Todo ello se renderiza sin destruir el audio original: el audio fuente nunca se 
 
 ```
 melisma/
-├── core/               # Librería C++ pura, sin JUCE GUI. Testeable.
+├── core/               # Librería C++20 pura, sin JUCE. Testeable.
 │   ├── analysis/       # f0, voicing, segmentación, épocas
 │   ├── model/          # Note, Take, comandos de edición, serialización
 │   ├── synthesis/      # PSOLA, vocoder, render incremental
@@ -80,7 +80,7 @@ melisma/
 ```
 
 **Reglas de diseño:**
-- `core` no depende de la GUI ni del host. Todo el DSP se prueba con tests.
+- `core` no depende de JUCE, de la GUI ni del host. Todo el DSP se prueba con tests. Los adaptadores que necesitan JUCE (por ejemplo, leer audio) viven en los binarios.
 - Nada que reserve memoria o bloquee en el hilo de audio. El análisis y el render se hacen en hilos de fondo; el hilo de audio solo lee buffers ya renderizados.
 - Stack: **C++20, CMake, JUCE 9 (AGPLv3), Catch2**, GitHub Actions para CI en macOS (y después Windows).
 
