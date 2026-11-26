@@ -21,7 +21,8 @@ target_sources(melisma_core
         src/analysis/PitchTrack.cpp
         src/analysis/Yin.cpp
         src/audio/MonoAudio.cpp
-        src/dsp/Fft.cpp)
+        src/dsp/Fft.cpp
+        src/model/Take.cpp)
 
 target_include_directories(melisma_core
     PUBLIC
