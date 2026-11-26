@@ -1,0 +1,8 @@
+# Tests inherit the project rules. Catch2's REQUIRE aborts the test case on
+# failure, which clang-tidy cannot see, so it flags every optional accessed
+# after REQUIRE (opt.has_value()). That check is disabled here only.
+---
+InheritParentConfig: true
+Checks: >
+  -bugprone-unchecked-optional-access
+...

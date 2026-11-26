@@ -145,7 +145,7 @@ void alignToFrameTimes (PitchTrack& track, const std::vector<double>& estimateTi
 }
 } // namespace
 
-PitchTrack detectPitchYin (const audio::MonoAudio& audio, const YinSettings& settings)
+PitchTrack detectPitchYin (const audio::MonoAudio& audio, const YinSettings& settings, const ProgressCallback& progress)
 {
     PitchTrack track;
     track.hopSeconds = settings.hopSeconds;
@@ -169,8 +169,15 @@ PitchTrack detectPitchYin (const audio::MonoAudio& audio, const YinSettings& set
     std::vector<double> estimateTimes (numFrames, 0.0);
     const auto totalSamples = static_cast<std::ptrdiff_t> (audio.size());
 
+    constexpr std::size_t progressInterval = 200; // frames (~1 s of audio at 5 ms hop)
     for (std::size_t f = 0; f < numFrames; ++f)
     {
+        if (progress && f % progressInterval == 0
+            && !progress (static_cast<double> (f) / static_cast<double> (numFrames)))
+        {
+            return track; // cancelled
+        }
+
         PitchFrame out;
         out.timeSeconds = static_cast<double> (f) * settings.hopSeconds;
 

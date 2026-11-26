@@ -3,6 +3,8 @@
 #include "melisma/core/analysis/PitchTrack.h"
 #include "melisma/core/audio/MonoAudio.h"
 
+#include <functional>
+
 namespace melisma::analysis
 {
 /** Settings for the YIN pitch detector. */
@@ -21,5 +23,10 @@ struct YinSettings
 
     Outputs one frame every hopSeconds. Frames where no lag falls below the
     threshold, or that are silent, have f0Hz = 0. */
-PitchTrack detectPitchYin (const audio::MonoAudio& audio, const YinSettings& settings = {});
+/** Called with progress in [0, 1]. Return false to cancel (the track is then
+    returned incomplete). */
+using ProgressCallback = std::function<bool (double)>;
+
+PitchTrack detectPitchYin (const audio::MonoAudio& audio, const YinSettings& settings = {},
+                           const ProgressCallback& progress = {});
 } // namespace melisma::analysis
